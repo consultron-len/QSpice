@@ -1,0 +1,8 @@
+ÿØÿÛ«symbol FE
+  «type: »
+  «description: Falling Edge»
+  «shorted pins: false»
+  «line (200,-100) (300,-100) 0 0 0x1000000 -1 -1»
+  «line (200,-100) (200,50) 7 0 0x0 -1 -1»
+  «line (100,50) (200,50) 0 0 0x1000000 -1 -1»
+»
