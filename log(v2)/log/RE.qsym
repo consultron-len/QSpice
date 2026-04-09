@@ -1,0 +1,8 @@
+ÿØÿÛ«symbol RE
+  «type: »
+  «description: Rising Edge»
+  «shorted pins: false»
+  «line (100,-100) (200,-100) 0 0 0x1000000 -1 -1»
+  «line (200,-100) (200,50) 7 0 0x0 -1 -1»
+  «line (200,50) (300,50) 0 0 0x1000000 -1 -1»
+»
