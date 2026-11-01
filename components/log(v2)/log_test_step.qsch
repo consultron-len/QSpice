@@ -16,49 +16,6 @@
       «pin (0,-200) (0,0) 1 0 0 0x0 -1 "-"»
     »
   »
-  «component (-1100,1100) 0 0
-    «symbol log
-      «type: Ø(.DLL)»
-      «description: 10 inputs»
-      «shorted pins: false»
-      «line (0,0) (100,0) 0 0 0x1000000 -1 -1»
-      «line (100,-100) (200,-100) 0 0 0x1000000 8 -1»
-      «line (200,-100) (200,50) 7 0 0x0 8 -1»
-      «line (200,50) (300,50) 0 0 0x1000000 8 -1»
-      «line (0,-300) (100,-300) 0 0 0x1000000 9 -1»
-      «line (0,-500) (100,-500) 0 0 0x1000000 9 -1»
-      «line (0,-700) (100,-700) 0 0 0x1000000 9 -1»
-      «line (0,-900) (100,-900) 0 0 0x1000000 9 -1»
-      «line (0,-1100) (100,-1100) 0 0 0x1000000 9 -1»
-      «line (0,-1300) (100,-1300) 0 0 0x1000000 9 -1»
-      «line (0,-1500) (100,-1500) 0 0 0x1000000 9 -1»
-      «line (0,-1700) (100,-1700) 0 0 0x1000000 9 -1»
-      «line (0,-1900) (100,-1900) 0 0 0x1000000 9 -1»
-      «line (0,-2100) (100,-2100) 0 0 0x1000000 9 -1»
-      «rect (100,100) (900,-2250) 0 7 0 0x4000000 0xffff00 9 1 9»
-      «text (400,200) 1 12 0 0x1000000 -1 -1 "LOG0"»
-      «text (746,248) 1.36 7 2 0x1000000 -1 -1 "log"»
-      «text (946,-2) 1 7 0 0x1000000 -1 -1 "char *logfile=<"filelog'iter'">"»
-      «text (946,-152) 1 7 2 0x1000000 -1 -1 "bool header=<(false),true>"»
-      «text (970,-300) 1 7 2 0x1000000 -1 -1 "int in_cnt=<1,2,3,4,5,6,7,8,9,(10)>Max inputs supported"»
-      «text (970,-450) 1 7 2 0x1000000 -1 -1 "char *dfmt=<%.12f>data format"»
-      «text (970,-600) 1 7 2 0x1000000 -1 -1 "char *ffmt=<.bin,(.csv),.txt>Select the file format and extension"»
-      «text (970,-750) 1 7 2 0x1000000 -1 -1 "char *trigtype=<(RE),FE,WH,WL>Select trigger type=>RE=rising edge; FE=falling edge; WH=Window@1V; WL=Window@0V"»
-      «text (2250,-1150) 1 0 2 0x1000000 -1 -1 "LOOKUP<char *trigtype;RE,FE,WH,WL>"»
-      «text (3450,-950) 1 0 2 0x1000000 -1 -1 "LOOKUP<int in_cnt;log1,log2,log3,log4,log5,log6,log7,log8,log9,log10>"»
-      «pin (0,0) (100,0) 1 15 17 0x0 -1 "trig"»
-      «pin (0,-300) (110,0) 1 7 145 0x0 9 "data1"»
-      «pin (0,-500) (110,0) 1 7 145 0x0 9 "data2"»
-      «pin (0,-700) (110,0) 1 7 145 0x0 9 "data3"»
-      «pin (0,-900) (110,0) 1 7 145 0x0 9 "data4"»
-      «pin (0,-1100) (110,0) 1 7 145 0x0 9 "data5"»
-      «pin (0,-1300) (110,0) 1 7 145 0x0 9 "data6"»
-      «pin (0,-1500) (110,0) 1 7 145 0x0 9 "data7"»
-      «pin (0,-1700) (110,0) 1 7 145 0x0 9 "data8"»
-      «pin (0,-1900) (110,0) 1 7 145 0x0 9 "data9"»
-      «pin (0,-2100) (110,0) 1 7 145 0x0 9 "data10"»
-    »
-  »
   «component (-7400,-600) 0 0
     «symbol Vpwl
       «type: V»
@@ -257,6 +214,51 @@
       «text (100,-150) 1 7 0 0x1000000 -1 -1 "PWL 0 0 1 10"»
       «pin (0,200) (0,0) 1 0 0 0x0 -1 "+"»
       «pin (0,-200) (0,0) 1 0 0 0x0 -1 "-"»
+    »
+  »
+  «component (-1100,1100) 0 0
+    «symbol log
+      «type: Ø(.DLL)»
+      «description: 10 inputs»
+      «shorted pins: false»
+      «line (0,0) (100,0) 0 0 0x1000000 -1 -1»
+      «line (100,-100) (200,-100) 7 4 0x1000000 9 -1»
+      «line (200,-100) (200,50) 7 0 0x0 9 -1»
+      «line (200,50) (300,50) 7 4 0x1000000 9 -1»
+      «line (0,-300) (100,-300) 0 0 0x1000000 10 -1»
+      «line (0,-500) (100,-500) 0 0 0x1000000 10 -1»
+      «line (0,-700) (100,-700) 0 0 0x1000000 10 -1»
+      «line (0,-900) (100,-900) 0 0 0x1000000 10 -1»
+      «line (0,-1100) (100,-1100) 0 0 0x1000000 10 -1»
+      «line (0,-1300) (100,-1300) 0 0 0x1000000 10 -1»
+      «line (0,-1500) (100,-1500) 0 0 0x1000000 10 -1»
+      «line (0,-1700) (100,-1700) 0 0 0x1000000 10 -1»
+      «line (0,-1900) (100,-1900) 0 0 0x1000000 10 -1»
+      «line (0,-2100) (100,-2100) 0 0 0x1000000 10 -1»
+      «rect (100,100) (900,-2300) 0 7 0 0x4000000 0xffff00 10 1 10»
+      «text (400,200) 1 12 0 0x1000000 -1 -1 "LOG0"»
+      «text (746,248) 1.36 7 2 0x1000000 -1 -1 "log"»
+      «text (946,-2) 1 7 0 0x1000000 -1 -1 "char *logfile=<"filelog'iter'">"»
+      «text (946,-152) 1 7 2 0x1000000 -1 -1 "bool header=<(false),true>"»
+      «text (970,-300) 1 7 2 0x1000000 -1 -1 "int in_cnt=<1,2,3,4,5,6,7,8,9,(10)>Max inputs supported"»
+      «text (970,-450) 1 7 2 0x1000000 -1 -1 "char *dfmt=<%.6f>data format"»
+      «text (970,-600) 1 7 2 0x1000000 -1 -1 "char *ffmt=<.bin,(.csv),.txt>Select the file format and extension"»
+      «text (970,-750) 1 7 2 0x1000000 -1 -1 "char *trigtype=<(RE),FE,WH,WL>Select trigger type=>RE=rising edge; FE=falling edge; WH=Window@1V; WL=Window@0V"»
+      «text (971,-1300) 1 7 2 0x1000000 -1 -1 "char *revision=<2.2>revision of the symbol to match the component"»
+      «text (968,-1150) 1 7 2 0x1000000 -1 -1 "LOOKUP<char *trigtype;RE,FE,WH,WL>"»
+      «text (961,-950) 1 7 2 0x1000000 -1 -1 "LOOKUP<int in_cnt;log1,log2,log3,log4,log5,log6,log7,log8,log9,log10>"»
+      «text (150,0) 0.5 0 1 0x1000000 9 -1 "RE"»
+      «pin (0,0) (100,0) 1 15 17 0x0 -1 "trig"»
+      «pin (0,-300) (110,0) 1 7 145 0x0 10 "data1"»
+      «pin (0,-500) (110,0) 1 7 145 0x0 10 "data2"»
+      «pin (0,-700) (110,0) 1 7 145 0x0 10 "data3"»
+      «pin (0,-900) (110,0) 1 7 145 0x0 10 "data4"»
+      «pin (0,-1100) (110,0) 1 7 145 0x0 10 "data5"»
+      «pin (0,-1300) (110,0) 1 7 145 0x0 10 "data6"»
+      «pin (0,-1500) (110,0) 1 7 145 0x0 10 "data7"»
+      «pin (0,-1700) (110,0) 1 7 145 0x0 10 "data8"»
+      «pin (0,-1900) (110,0) 1 7 145 0x0 10 "data9"»
+      «pin (0,-2100) (110,0) 1 7 145 0x0 10 "data10"»
     »
   »
   «net (-7400,-800) 1 13 0 "GND"»

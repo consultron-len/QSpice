@@ -1,4 +1,4 @@
-// Automatically generated C++ file on Sun Mar 4 2026
+// Automatically generated C++ file on Sept 26 2026
 //
 // To build with Digital Mars C++ Compiler:
 //
@@ -30,12 +30,14 @@
 ?     - Change: header arg to char *.  Use stricmp() on arg looking for "YES".
 ?  2.1.0 - Change: header arg to bool.  Use global equate false=NO, true=YES.  Thanks RDunn
 ?     - Add: More user-selectable inputs to 10.
+?  2.1.1 - Add: fflush() at end of main().  This improves data retention should the sim be manually aborted.
+?  2.2 - Add: Revision checking in the symbol.
+?     - Add: Argument indexing.  ForKeeps checking. 
 */
 
 #define PROGRAM_NAME    "log"
-#define PROGRAM_V_MAJOR "2"
-#define PROGRAM_V_MINOR "1"   // up to 10-input
-#define PROGRAM_INFO    PROGRAM_NAME " v" PROGRAM_V_MAJOR "." PROGRAM_V_MINOR
+#define PROGRAM_REV     "2.2"
+#define PROGRAM_INFO    PROGRAM_NAME " v" PROGRAM_REV
 
 #include <malloc.h>
 #include <stdarg.h>
@@ -50,23 +52,9 @@ using namespace std;
 
 extern "C" __declspec(dllexport) void (*Display)(const char *format, ...)       = 0; // works like printf()
 extern "C" __declspec(dllexport) void (*EXIT)(const char *format, ...)          = 0; // print message like printf() but exit(0) afterward
-extern "C" __declspec(dllexport) const double *DegreesC                         = 0; // pointer to current circuit temperature
-extern "C" __declspec(dllexport) const int *StepNumber                          = 0; // pointer to current step number
-extern "C" __declspec(dllexport) const int *NumberSteps                         = 0; // pointer to estimated number of steps
 extern "C" __declspec(dllexport) const char* const *InstanceName                = 0; // pointer to address of instance name
-extern "C" __declspec(dllexport) const char *QUX                                = 0; // path to QUX.exe
 extern "C" __declspec(dllexport) const bool *ForKeeps                           = 0; // pointer to whether being evaluated non-hypothetically
-extern "C" __declspec(dllexport) const bool *HoldICs                            = 0; // pointer to whether instance initial conditions are being held
-extern "C" __declspec(dllexport) const void *GUI_HWND                           = 0; // pointer to Window handle of QUX.exe
-extern "C" __declspec(dllexport) const double *CKTtime                          = 0;
-extern "C" __declspec(dllexport) const double *CKTdelta                         = 0;
-extern "C" __declspec(dllexport) const int *IntegrationOrder                    = 0;
-extern "C" __declspec(dllexport) const char *InstallDirectory                   = 0;
-extern "C" __declspec(dllexport) double (*EngAtof)(const char **string)         = 0;
-extern "C" __declspec(dllexport) const char *(*BinaryFormat)(unsigned int data)                          = 0; // BinaryFormat(0x1C) returns "0b00011100"
-extern "C" __declspec(dllexport) const char *(*EngFormat   )(double x, const char *units, int numDgts)   = 0; // EngFormat(1e-6, "s", 6) returns "1�s"
-extern "C" __declspec(dllexport) int (*DFFT)(struct sComplex *u, bool inv, unsigned int N, double scale) = 0; // Discrete Fast Fourier Transform
-extern "C" __declspec(dllexport) void (*bzero)(void *ptr, unsigned int count)   = 0;
+extern "C" __declspec(dllexport) const int *StepNumber                          = 0; // pointer to current step number
 
 union uData {
    bool b;
@@ -101,18 +89,6 @@ int __stdcall DllMain(void *module, unsigned int reason, void *reserved) { retur
 #define BIN_FILE_VERSION ((unsigned int)((2u << 16) | 0u))   // 2.0
 
 // #undef pin names lest they collide with names in any header file(s) you might include.
-#undef data0
-#undef data1
-#undef data2
-#undef data3
-#undef data4
-#undef data5
-#undef data6
-#undef data7
-#undef data8
-#undef data9
-#undef data10
-#undef trig
 
 //#define DEBUG
 #if defined(DEBUG)
@@ -126,7 +102,7 @@ int __stdcall DllMain(void *module, unsigned int reason, void *reserved) { retur
 using namespace std;
 
 /******/
-enum
+typedef enum
 {  // Use lowercase substitution
    tt_RE = ('e'<<8)+'r',   // rising edge
    tt_FE = ('e'<<8)+'f',   // falling edge
@@ -141,39 +117,52 @@ struct sLOGGER {
   bool trig_prev; // previous trigger value
   FILE *filep;     // file struct
   bool ffmt_bin;     // selected file format true=binary false=csv or txt
-  enum etrig trigtype;  // selected trigger type.
+  etrig trigtype;  // selected trigger type.
 };
 
+typedef enum
+{
+   trig_idx,
+   logfile_idx=INPUT_CNT_MAX+1,
+   header_idx,
+   in_cnt_idx,
+   dfmt_idx,
+   ffmt_idx,
+   trigtype_idx,
+   revision_idx,
+} e_args;
 
 vector<string> fnlist; // vector of filename strings
 string filename(""); // filename
 /**************************************************************/
 extern "C" __declspec(dllexport) void log(sLOGGER **opaque, double t, union uData *data) {
 
-   bool         trig    = data[0].b  ; // input
-/******** Commented out.  Not used.  Here as placeholders.  data[] vars are called directly.
-double dat[INPUT_CNT_MAX+1];  // Not used here
-********/
-   const char *logfile  = data[INPUT_CNT_MAX+1].str; // input parameter
-   bool        header   = data[INPUT_CNT_MAX+2].b;  // input parameter
-   int         in_cnt   = data[INPUT_CNT_MAX+3].i;   // input parameter
-   const char *dfmt     = data[INPUT_CNT_MAX+4].str;   // input parameter
-   const char *ffmt     = data[INPUT_CNT_MAX+5].str;   // input parameter
-   const char *trigtype = data[INPUT_CNT_MAX+6].str;   // input parameter
+   if(*ForKeeps == 0) return;      // ForKeeps optimization.
 
-  sLOGGER *inst = *opaque;
+      sLOGGER *inst = *opaque;
+   bool         trig    = data[trig_idx].b  ; // input
+   // Inputs in1 thru in16 are directly accessed as data[data_idx]
+   const char *logfile  = data[logfile_idx].str; // input parameter
+   bool        header   = data[header_idx].b;  // input parameter
+   int         in_cnt   = data[in_cnt_idx].i;   // input parameter
+   const char *dfmt     = data[dfmt_idx].str;   // input parameter
+   const char *ffmt     = data[ffmt_idx].str;   // input parameter
+   const char *trigtype = data[trigtype_idx].str;   // input parameter
 
-  if (!*opaque)
+   if (!*opaque)
   {
   bool started = false;
-  char *mode = "  ";
+  char mode[3];
+  // Check the component revision against the reference revision of the C_Block ONLY on the first step
+      if(*StepNumber == 1) 
+      {  if(0 != strcmp(data[revision_idx].str,PROGRAM_REV))  EXIT("Wrong Component revision.  Needs revision %s",PROGRAM_REV);}
 
 /********  Let's do some quick bounds checking */
-    if(in_cnt > INPUT_CNT_MAX)
-    {  //Input count exceeded.
-      Display("Input count exceeded.  Max allowed = %u.   Simulation stopped.\n",INPUT_CNT_MAX);
-      exit(4);   // exit sim
-    }
+      if(in_cnt > INPUT_CNT_MAX)
+      {  //Input count exceeded.
+         Display("Input count exceeded.  Max allowed = %u.   Simulation stopped.\n",INPUT_CNT_MAX);
+         exit(4);   // exit sim
+      }
 
     /*** Compute logfile ***/
     inst = *opaque = (sLOGGER *)calloc(1, sizeof(sLOGGER));
@@ -184,13 +173,13 @@ double dat[INPUT_CNT_MAX+1];  // Not used here
     vector<string>::iterator it = find(fnlist.begin(), fnlist.end(), newfn);
     if(it==fnlist.end())
     { // newfilename not found on list
-      mode = "w";      // Delete (it already exists) and go to write.
+      strcpy(mode,(char*)"w");      // Delete (it already exists) and go to write.
       started = true;
       fnlist.push_back(newfn);   // Push the logfile name on the list
     }
     else
     { // newfilename found on list
-      mode = "a";      // Append write.
+      strcpy(mode,(char*)"a");      // Append write.
     }
 
     /*** Determine the file format to use ***/
@@ -236,7 +225,7 @@ DDisplay("fprintf header ...\n");
          }
     }
     /*** Determine the trigger type ***/
-    inst->trigtype = (enum etrig)((*(short *)trigtype) | 0x2020);   // convert to lower-case
+    inst->trigtype = (etrig)((*(short *)trigtype) | 0x2020);   // convert to lower-case
 DDisplay("e_trig = %X    etrig = %X\n",inst->trigtype, tt_RE);
   }
 
@@ -283,6 +272,8 @@ DDisplay("e_trig = %X    etrig = %X\n",inst->trigtype, tt_RE);
      }
   }
   inst->trig_prev = trig;
+
+  fflush(inst->filep);  // flush the data out of the queue to the file
 }
 
 /**************************************************************/

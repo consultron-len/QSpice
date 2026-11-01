@@ -8,9 +8,10 @@
   «text (946,-2) 1 7 0 0x1000000 -1 -1 "char *logfile=<filelog>"»
   «text (946,-152) 1 7 2 0x1000000 -1 -1 "bool header=<(false),true>"»
   «text (970,-300) 1 7 2 0x1000000 -1 -1 "int in_cnt=<1,2,3,4,5,6,7,8,9,(10)>Max inputs supported"»
-  «text (970,-450) 1 7 2 0x1000000 -1 -1 "char *dfmt=<%.12f>data format"»
+  «text (970,-450) 1 7 2 0x1000000 -1 -1 "char *dfmt=<%.6f>data format"»
   «text (970,-600) 1 7 2 0x1000000 -1 -1 "char *ffmt=<.bin,(.csv),.txt>Select the file format and extension"»
   «text (970,-750) 1 7 2 0x1000000 -1 -1 "char *trigtype=<(RE),FE,WH,WL>Select trigger type=>RE=rising edge; FE=falling edge; WH=Window@1V; WL=Window@0V"»
+  «text (971,-1300) 1 7 2 0x1000000 -1 -1 "char *revision=<2.2>revision of the symbol to match the component"»
   «text (968,-1150) 1 7 2 0x1000000 -1 -1 "LOOKUP<char *trigtype;RE,FE,WH,WL>"»
   «text (961,-950) 1 7 2 0x1000000 -1 -1 "LOOKUP<int in_cnt;log1,log2,log3,log4,log5,log6,log7,log8,log9,log10>"»
   «pin (0,0) (100,0) 1 15 17 0x0 -1 "trig"»
